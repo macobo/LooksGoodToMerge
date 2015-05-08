@@ -1,10 +1,10 @@
 root = exports ? this
 
 statusRules = [
-  [".text-success", "passed"]
-  [".text-failure", "failed"]
-  [".text-error", "failed"]
-  [".text-pending", "pending"]
+  [".status-description.text-pending", "pending"]
+  [".status-description.text-success", "passed"]
+  [".status-description.text-failure", "failed"]
+  [".status-description.text-error", "failed"]
   [".branch-action-state-merged", "merged"]
   [".branch-action-state-closed-dirty", "closed"]
 ]
@@ -23,7 +23,6 @@ extractStatus = getDocument ($dom) ->
 
 canMerge = getDocument ($dom) ->
   button = $dom.find('.btn.merge-branch-action:enabled')
-  console.log(button)
   button.length > 0
 
 title = getDocument ($dom) ->
