@@ -35,7 +35,7 @@ checkPassed = (startState, url) ->
     # See http://stackoverflow.com/questions/14667441/jquery-unrecognized-expression-on-ajax-response
     $dom = $($.parseHTML(data))
     window.$dom = $dom
-    newStatus = github.extractPullStatus($dom)
+    newStatus = github.pullRequest.extractStatus($dom)
 
     if (newStatus != startState || newStatus == 'passed')
       show(newStatus, url)

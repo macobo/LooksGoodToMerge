@@ -9,25 +9,53 @@ statusRules = [
   [".branch-action-state-closed-dirty", "closed"]
 ]
 
-extractPullStatus = ($dom) ->
-  $dom ||= $(document)
+getDocument = (handler) -> ($dom) ->
+  handler($dom || $(document))
+
+extractStatus = getDocument ($dom) ->
   ruleMatches = ([partialSelector, cls]) ->
     selector = "#partial-pull-merging #{partialSelector}"
     matching = $dom.find selector
     matching.length > 0
 
-  result = _(statusRules).find ruleMatches
-  result[1] ? 'unknown'
+  result = _(statusRules).find(ruleMatches)
+  if result then result[1] else 'unknown'
 
-canMerge = ($dom) ->
-  $dom ||= $(document)
-  button = $dom.find(".btn.merge-branch-action:disabled")
+canMerge = getDocument ($dom) ->
+  button = $dom.find('.btn.merge-branch-action:enabled')
   console.log(button)
-  button.length == 0
+  button.length > 0
 
-root.github = {
-  extractPullStatus
-  canMerge
-}
+title = getDocument ($dom) ->
+  $dom.find('.js-issue-title').text()
 
-# console.log(window, this, extractPullStatus($(document)))
+id = getDocument ($dom) ->
+  +($dom.find('.gh-header-number').text()[1..])
+
+
+uuid = getDocument (url) ->
+  regex = /github\.com\/([^\/]+)\/([^\/]+)\/pull\/(\d+)$/
+  [user, repo, _id] = url.match(regex)[1..]
+  "uuid:#{user}/#{repo}/#{_id}"
+
+summary = (url, $dom) ->
+  {
+    title: title($dom)
+    id: id($dom)
+    canMerge: canMerge($dom)
+    status: extractStatus($dom)
+    url: url
+    uuid: uuid(url)
+  }
+
+root.github =
+  pullRequest: {
+    summary
+    extractStatus
+    canMerge
+    title
+    id
+  }
+
+
+# console.log(window, this, extractStatus($(document)))

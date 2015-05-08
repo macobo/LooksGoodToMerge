@@ -1,14 +1,21 @@
 'use strict'
 
-$('#partial-discussion-header .gh-header-meta')
-  .append('<button id="ext-merge-btn">test</button>')
+addButton = ($parent) ->
+  button = '''
+    <span id="ext-merge-btn" class="btn btn-outline" style="float: left;">
+      <span class="octicon octicon-primitive-dot text-pending"></span>
+      Merge when tests pass
+    </span>
+  '''
+  $parent.on("click", "#ext-merge-btn", -> console.log("hi"))
+  $parent.prepend(button)
 
 message = {
   type: 'notify-passed'
   url: document.URL
-  state: github.extractPullStatus(),
-  canMerge: github.canMerge()
+  summary: github.pullRequest.summary(document.URL)
 }
-console.log 'current PR:', message
+console.log 'current PR:', message, github.pullRequest.summary(document.URL)
 
-chrome.extension.sendMessage(message)
+# chrome.extension.sendMessage(message)
+addButton($('.commit-form-actions'))
