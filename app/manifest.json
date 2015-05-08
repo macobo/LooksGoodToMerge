@@ -33,7 +33,10 @@
       "run_at": "document_end"
     }
   ],
-  "permissions": ["notifications"],
+  "permissions": [
+    "notifications",
+    "https://github.com/*/merge"
+  ],
   "web_accessible_resources": [
     "images/*.png"
   ]

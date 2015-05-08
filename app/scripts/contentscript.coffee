@@ -16,7 +16,6 @@ addButton = (summary, $parent) ->
     </button>
   ''')
   button.on "click", ->
-    console.log("clickedy click")
     sendTask(summary)
     button.prop("disabled", true)
   $parent.prepend(button)
@@ -24,7 +23,12 @@ addButton = (summary, $parent) ->
 updateSite = ->
   summary = github.pullRequest.summary(document.URL)
   console.log(summary)
-  if (summary.canMerge && summary.status == "pending")
-    addButton summary, $('.commit-form-actions')
+  addButton summary, $('.gh-header-title')
+  # if (summary.canMerge && summary.status == "pending")
+    # addButton summary, $('.commit-form-actions')
 
-updateSite()
+if location.search == "?mergenow"
+  $("form.merge-branch-form").submit()
+  setTimeout((-> window.close()), 300)
+else
+  updateSite()

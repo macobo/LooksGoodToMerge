@@ -37,7 +37,7 @@ showTimedNotification = (title, options, onClickUrl, timeout) ->
 
   notification = new Notification(title, options)
   notification.onshow = ->
-    if (timeout > 0)
+    if timeout? && timeout > 0
       setTimeout(notification.close.bind(notification), timeout)
   notification.onclick = ->
     if (onClickUrl)
@@ -46,21 +46,59 @@ showTimedNotification = (title, options, onClickUrl, timeout) ->
 markWorkDone = (summary) ->
   console.log "Marking PR as done:", summary
   {title, options} = notifications[summary.status](summary)
-  showTimedNotification title, options, summary.url, 10000
+  showTimedNotification title, options, summary.url, -1
+
+mergePull = (summary, $dom) ->
+  submitUrl = summary.url + "/merge"
+  showTimedNotification "Merging \"#{summary.title}\"", {}, summary.url, -1
+  # $form = $dom.find("form.merge-branch-form")
+  setTimeout(
+    ->
+      chrome.tabs.create {url: summary.url+"?mergenow", active: false}
+    , 2000)
+
+  # data =
+  #   utf8: "✓"
+  #   authenticity_token: summary.csrf_token
+  #   head_sha: summary.sha
+  #   commit_message: "Merge \"#{summary.title}\" by LooksGoodToMerge."
+  # console.log data
+  # $.ajax {
+  #   url: submitUrl
+  #   method: 'POST',
+  #   data: $form.serialize()
+  #   headers: {}
+  #     # "Origin": "https://github.com"
+  #     # "Referer": summary.url
+  #     # "X-CSRF-Token": summary.csrf_token
+  #     # "X-Requested-With": "XMLHttpRequest"
+  #     # "X-Timeline-Last-Modified": $dom.find("#partial-timeline-marker").attr("data-last-modified")
+  #   success: (response) ->
+  #     console.log "Submitted", summary, "got response", response
+  #     latestStatus summary.url, markWorkDone
+  # }
+
+latestStatus = (url, callback) ->
+  $.get url, (data) ->
+    # See http://stackoverflow.com/questions/14667441/jquery-unrecognized-expression-on-ajax-response
+    $dom = $($.parseHTML(data))
+    doc = document.implementation.createHTMLDocument("root")
+    window.doc = $(doc)
+    $(doc.body).append($dom)
+    callback github.pullRequest.summary(url, $(doc)), $(doc)
 
 checkPassed = (summary) ->
   {status, url} = summary
   requeue = ->
     setTimeout((-> checkPassed(summary)), RETRY_INTERVAL)
 
-  $.get(url, (data) ->
-    # See http://stackoverflow.com/questions/14667441/jquery-unrecognized-expression-on-ajax-response
-    $dom = $($.parseHTML(data))
-    newSummary = github.pullRequest.summary(url, $dom)
-
-    if (newSummary.status != 'pending')
+  latestStatus(url, (newSummary, $dom) ->
+    if newSummary.status != 'pending'
       console.log "Update!", newSummary
-      markWorkDone newSummary
+      if newSummary.status is 'passed'
+        mergePull newSummary, $dom
+      else
+        markWorkDone newSummary
     else
       console.log "No updates, retrying in #{RETRY_INTERVAL/1000.0}s.", url, summary
       requeue()
