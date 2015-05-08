@@ -11,6 +11,8 @@
   "background": {
     "scripts": [
       "bower_components/jquery/dist/jquery.js",
+      "bower_components/lodash/lodash.min.js",
+      "scripts/branchStatus.js",
       "scripts/chromereload.js",
       "scripts/background.js"
     ],
@@ -24,6 +26,8 @@
       ],
       "js": [
         "bower_components/jquery/dist/jquery.js",
+        "bower_components/lodash/lodash.min.js",
+        "scripts/branchStatus.js",
         "scripts/contentscript.js"
       ],
       "run_at": "document_end"
