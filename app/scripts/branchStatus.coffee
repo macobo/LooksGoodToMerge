@@ -16,11 +16,18 @@ extractPullStatus = ($dom) ->
     matching = $dom.find selector
     matching.length > 0
 
-  [partial, resultType] = _(statusRules).find ruleMatches
-  resultType ? 'unknown'
+  result = _(statusRules).find ruleMatches
+  result[1] ? 'unknown'
+
+canMerge = ($dom) ->
+  $dom ||= $(document)
+  button = $dom.find(".btn.merge-branch-action:disabled")
+  console.log(button)
+  button.length == 0
 
 root.github = {
   extractPullStatus
+  canMerge
 }
 
 # console.log(window, this, extractPullStatus($(document)))
