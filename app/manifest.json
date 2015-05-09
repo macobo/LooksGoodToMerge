@@ -12,9 +12,9 @@
     "scripts": [
       "bower_components/jquery/dist/jquery.js",
       "bower_components/lodash/lodash.min.js",
-      "scripts/branchStatus.js",
-      "scripts/chromereload.js",
-      "scripts/background.js"
+      "scripts/js/branchStatus.js",
+      "scripts/js/chromereload.js",
+      "scripts/js/background.js"
     ],
     "persistent": true
   },
@@ -26,17 +26,14 @@
       "js": [
         "bower_components/jquery/dist/jquery.js",
         "bower_components/lodash/lodash.min.js",
-        "scripts/branchStatus.js",
-        "scripts/contentscript.js"
+        "scripts/js/branchStatus.js",
+        "scripts/js/contentscript.js"
       ],
       "run_at": "document_end"
     }
   ],
   "permissions": [
     "notifications",
-    "https://github.com/*/merge"
-  ],
-  "web_accessible_resources": [
-    "images/*.png"
+    "storage"
   ]
 }

@@ -6,6 +6,8 @@ statusRules = [
   [".status-description.text-failure", "failed"]
   [".status-description.text-error", "failed"]
   [".branch-action-state-merged", "merged"]
+  # This means it's not mergable
+  # [".branch-action-state-dirty", "closed"]
   [".branch-action-state-closed-dirty", "closed"]
 ]
 
