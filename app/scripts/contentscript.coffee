@@ -34,54 +34,31 @@ updateSite = ->
   if (summary.canMerge && summary.status == "pending")
     addButton summary, $('.commit-form-actions')
 
-# Github doesn't do full reloads on state changes, but rather uses pushState
+# Github doesn't do full reloads on state changes, but rather uses pushState so
 # poll for that
-callAtLatest = (timeout, handler) ->
-  canHappen = true
-  happened = false
-  setTimeout(->
-    canHappen = false
-    if !happened
-      console.log "it didn't happen!"
-      handler()
-  , timeout)
-  (args...) ->
-    if canHappen
-      console.log "called", args, $("title").text()
-      canHappen = false
-      happened = true
-      handler args...
-
 onPageChange = (callInitial, callback) ->
-  if !callback?
-    callback = callInitial
-    callInitial = false
-  title = -> $("title").text()
-  resolve = ->
-    oldTitle = title()
-    callback()
-
   if callInitial
     callback()
 
   oldUrl = document.URL
-  oldTitle = title()
   setInterval ->
     if document.URL != oldUrl
-      # Wait until the title changes or up to 5 seconds before continuing
-      # This should fix the race if a page loads slowly
-      if title() == oldTitle
-        $("title").one 'DOMSubtreeModified', callAtLatest(5000, resolve)
-      else
-        resolve()
+      callback()
       oldUrl = document.URL
   , 400
+
+waitUtilVisible = (selector, callback) ->
+  count = $(selector).length
+  if count is 0
+    setTimeout (-> waitUtilVisible selector, callback), 50
+  else
+    callback()
 
 onPageChange true, ->
   console.debug("page changed", document.URL)
   $(".extn-lgtm").remove()
   if isPullRequestPage()
-    updateSite()
+    waitUtilVisible ".gh-header-title", updateSite
 
 if location.search == "?mergenow"
   $("form.merge-branch-form").submit()

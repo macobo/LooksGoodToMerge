@@ -2,6 +2,7 @@ root = exports ? this
 
 statusRules = [
   [".status-description.text-pending", "pending"]
+  # TODO: these should match non-mergable as well!
   [".status-description.text-success", "passed"]
   [".status-description.text-failure", "failed"]
   [".status-description.text-error", "failed"]
