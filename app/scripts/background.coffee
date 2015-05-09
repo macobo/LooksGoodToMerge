@@ -63,6 +63,9 @@ latestStatus = (url, callback) ->
     callback github.pullRequest.summary(url, $(doc)), $(doc)
 
 waitForChange = (summary, callback) ->
+  if !store.isEnqueued(summary.url)
+    console.log "Stopping task", summary
+    return
   {url} = summary
 
   requeue = ->
@@ -78,7 +81,7 @@ waitForChange = (summary, callback) ->
 
 mergeWhenPassed = (task) ->
   if store.isEnqueued(task.url)
-    console.log "Task is already enqueued!"
+    console.log "Task is already enqueued!", task
     return
 
   resolvePull = ->
@@ -100,3 +103,4 @@ chrome.extension.onMessage.addListener (request) ->
   console.log 'Received message', request
   switch request.type
     when 'merge-pending-when-passed' then mergeWhenPassed(request.summary)
+    when 'cancel-task' then store.resolve(request.summary)

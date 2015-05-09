@@ -19,7 +19,7 @@ sendTask = (summary) ->
 
 cancelCurrentTask = () ->
   chrome.extension.sendMessage {
-    message: 'cancel-task'
+    type: 'cancel-task'
     summary: currentSummary()
   }
 
