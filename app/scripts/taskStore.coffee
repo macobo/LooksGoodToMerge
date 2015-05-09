@@ -1,4 +1,7 @@
-key = (task) -> "#{task.url}-enqueued"
+key = (task) -> "#{task.url}"
+asyncify = (callback) -> (result) ->
+  if callback?
+    callback null, result
 
 root = exports ? this
 root.TaskStore =
@@ -28,12 +31,12 @@ class TaskStore
     console.debug('Enqueue task', task.url)
     k = {}
     k[key(task)] = true
-    @storage.set k, callback
-    @_dirty = true
+    @currentState[key(task)] = true
+    @storage.set k, asyncify(callback)
 
   resolve: (task, callback) =>
     console.debug('Resolving task', task.url)
-    @storage.remove key(task), callback
+    @storage.remove key(task), asyncify(callback)
     @_dirty = true
 
   isEnqueued: (task) =>

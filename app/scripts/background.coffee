@@ -50,8 +50,10 @@ markWorkDone = (summary) ->
   showTimedNotification title, options, summary.url, -1
 
 mergePull = (summary) ->
-  # chrome.tabs.create {url: summary.url+"?mergenow", active: false}
-  markWorkDone summary
+  # TODO: Redo this with iframes
+  chrome.tabs.create {url: summary.url+"?mergenow", active: false}
+  # markWorkDone summary
+  setTimeout (-> latestStatus(summary.url, markWorkDone)), 5000
 
 latestStatus = (url, callback) ->
   $.get url, (data) ->
@@ -63,8 +65,8 @@ latestStatus = (url, callback) ->
     callback github.pullRequest.summary(url, $(doc)), $(doc)
 
 waitForChange = (summary, callback) ->
-  if !store.isEnqueued(summary.url)
-    console.log "Stopping task", summary
+  if !store.isEnqueued summary
+    console.log "Task was stopped by user", summary, _.clone(store.currentState), store.currentState["#{summary.url}"]
     return
   {url} = summary
 
@@ -84,7 +86,8 @@ mergeWhenPassed = (task) ->
     console.log "Task is already enqueued!", task
     return
 
-  resolvePull = ->
+  resolvePull = (err) ->
+    console.error("Failed", err) if err?
     latestStatus task.url, (result) ->
       console.log "Resolving", result
       if result.status is 'passed'

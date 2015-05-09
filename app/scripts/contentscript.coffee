@@ -132,12 +132,14 @@ onPageChange true, ->
     waitUntilVisible ".gh-header-title", 50, ->
       updateSite()
 
-waitUntilVisible ".status-description.text-pending", 3000, ->
-  console.log 'Branch status changed, updating'
-  updateSite()
+# waitUntilVisible ".status-description.text-pending", 3000, ->
+#   console.log 'Branch status changed, updating'
+#   updateSite()
 
-store.watch ->
-  console.log "Store changed, updating!"
+$(document).on "click", ".merge-message .merge-branch-action.js-details-target", updateSite
+
+store.watch (newState) ->
+  console.log "Store changed, updating!", newState
   updateSite()
 
 if location.search == "?mergenow"
