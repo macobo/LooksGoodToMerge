@@ -12,7 +12,9 @@
     "scripts": [
       "bower_components/jquery/dist/jquery.js",
       "bower_components/lodash/lodash.min.js",
+      "bower_components/async/lib/async.js",
       "scripts/js/branchStatus.js",
+      "scripts/js/taskStore.js",
       "scripts/js/chromereload.js",
       "scripts/js/background.js"
     ],
@@ -25,8 +27,8 @@
       ],
       "js": [
         "bower_components/jquery/dist/jquery.js",
-        "bower_components/lodash/lodash.min.js",
         "scripts/js/branchStatus.js",
+        "scripts/js/taskStore.js",
         "scripts/js/contentscript.js"
       ],
       "run_at": "document_end"

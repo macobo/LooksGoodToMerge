@@ -16,13 +16,15 @@ getDocument = (handler) -> ($dom) ->
   handler($dom || $(document))
 
 extractStatus = getDocument ($dom) ->
-  ruleMatches = ([partialSelector, cls]) ->
+  ruleMatches = (partialSelector) ->
     selector = "#partial-pull-merging #{partialSelector}"
     matching = $dom.find selector
     matching.length > 0
 
-  result = _(statusRules).find(ruleMatches)
-  if result then result[1] else 'unknown'
+  for [partial, className] in statusRules
+    if ruleMatches partial
+      return className
+  'unknown'
 
 canMerge = getDocument ($dom) ->
   button = $dom.find('.btn.merge-branch-action:enabled')
@@ -65,6 +67,3 @@ root.github =
     title
     id
   }
-
-
-# console.log(window, this, extractStatus($(document)))
