@@ -118,10 +118,10 @@ onPageChange = (callInitial, callback) ->
       store.refresh callback
   , 400
 
-waitUntilVisible = (selector, callback) ->
+waitUntilVisible = (selector, timeout, callback) ->
   count = $(selector).length
   if count is 0
-    setTimeout (-> waitUntilVisible selector, callback), 50
+    setTimeout (-> waitUntilVisible selector, timeout, callback), timeout
   else
     callback()
 
@@ -129,7 +129,12 @@ onPageChange true, ->
   # console.debug("page changed", document.URL)
   Renderer.renderState(Renderer.states.vanilla)
   if isPullRequestPage()
-    waitUntilVisible ".gh-header-title", updateSite
+    waitUntilVisible ".gh-header-title", 50, ->
+      updateSite()
+
+waitUntilVisible ".status-description.text-pending", 3000, ->
+  console.log 'Branch status changed, updating'
+  updateSite()
 
 store.watch ->
   console.log "Store changed, updating!"
