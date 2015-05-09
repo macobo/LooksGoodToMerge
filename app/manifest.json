@@ -18,11 +18,10 @@
     ],
     "persistent": true
   },
-  // "options_page": "options.html",
   "content_scripts": [
     {
       "matches": [
-        "https://github.com/*/*/pull/*"
+        "https://github.com/*"
       ],
       "js": [
         "bower_components/jquery/dist/jquery.js",
