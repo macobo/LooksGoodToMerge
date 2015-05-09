@@ -142,7 +142,7 @@ module.exports = function (grunt) {
           expand: true,
           cwd: '<%= config.app %>/scripts',
           src: '{,*/}*.{coffee,litcoffee,coffee.md}',
-          dest: '<%= config.app %>/scripts',
+          dest: '<%= config.app %>/scripts/js',
           ext: '.js'
         }]
       },
@@ -169,24 +169,24 @@ module.exports = function (grunt) {
     // Reads HTML for usemin blocks to enable smart builds that automatically
     // concat, minify and revision files. Creates configurations in memory so
     // additional tasks can operate on them
-    useminPrepare: {
-      options: {
-        dest: '<%= config.dist %>'
-      },
-      html: [
-        '<%= config.app %>/popup.html',
-        '<%= config.app %>/options.html'
-      ]
-    },
+    // useminPrepare: {
+    //   options: {
+    //     dest: '<%= config.dist %>'
+    //   },
+    //   html: [
+    //     // '<%= config.app %>/popup.html',
+    //     // '<%= config.app %>/options.html'
+    //   ]
+    // },
 
-    // Performs rewrites based on rev and the useminPrepare configuration
-    usemin: {
-      options: {
-        assetsDirs: ['<%= config.dist %>', '<%= config.dist %>/images']
-      },
-      html: ['<%= config.dist %>/{,*/}*.html'],
-      css: ['<%= config.dist %>/styles/{,*/}*.css']
-    },
+    // // Performs rewrites based on rev and the useminPrepare configuration
+    // usemin: {
+    //   options: {
+    //     assetsDirs: ['<%= config.dist %>', '<%= config.dist %>/images']
+    //   },
+    //   html: ['<%= config.dist %>/{,*/}*.html'],
+    //   css: ['<%= config.dist %>/styles/{,*/}*.css']
+    // },
 
     // The following *-min tasks produce minifies files in the dist folder
     imagemin: {
@@ -299,9 +299,9 @@ module.exports = function (grunt) {
           buildnumber: true,
           indentSize: 2,
           background: {
-            target: 'scripts/background.js',
+            target: 'scripts/js/background.js',
             exclude: [
-              'scripts/chromereload.js'
+              'scripts/js/chromereload.js'
             ]
           }
         },
@@ -346,14 +346,14 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'clean:dist',
     'chromeManifest:dist',
-    'useminPrepare',
+    // 'useminPrepare',
     'concurrent:dist',
     // No UI feature selected, cssmin task will be commented
     // 'cssmin',
     'concat',
     'uglify',
     'copy',
-    'usemin',
+    // 'usemin',
     'compress'
   ]);
 
