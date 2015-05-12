@@ -1,11 +1,11 @@
 root = exports ? this
 
 statusRules = [
-  [".status-description.text-pending", "pending"]
+  [".text-pending", "pending"]
   # TODO: these should match non-mergable as well!
-  [".status-description.text-success", "passed"]
-  [".status-description.text-failure", "failed"]
-  [".status-description.text-error", "failed"]
+  [".text-success", "passed"]
+  [".text-failure", "failed"]
+  [".text-error", "failed"]
   [".branch-action-state-merged", "merged"]
   # This means it's not mergable
   # [".branch-action-state-dirty", "closed"]
