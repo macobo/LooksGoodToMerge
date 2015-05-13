@@ -5,5 +5,7 @@
     "jquery": "~2.1.4",
     "async": "~0.9.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "lodash": "~3.8.0"
+  }
 }
